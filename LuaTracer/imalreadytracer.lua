@@ -1,3 +1,5 @@
+bit32 = require('bit32')
+
 local function add_vector(a, b)  -- +
     return {
         a.x+b.x,
