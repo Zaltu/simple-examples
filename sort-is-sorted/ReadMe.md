@@ -5,8 +5,8 @@ From these results, looks like there's a relatively noticable improvement for la
 
 
 ## Test values
-List length: 5000
-Iterations: 50,000
+List length: 5000  
+Iterations: 50,000  
 With/Without key ratio: 50/50
 
 
