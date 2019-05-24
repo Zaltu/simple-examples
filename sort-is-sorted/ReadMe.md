@@ -11,17 +11,17 @@ With/Without key ratio: 50/50
 
 
 ## Results
-Average with key (sort+max): 0.0023173793488224
+Average with key (sort+max): 0.0023173793488224  
 Average without key (sort+max): 0.0026120122049141
 
-Average with key (max): 3.9851751484555e-07
+Average with key (max): 3.9851751484555e-07  
 Average without key (max): 0.00038220651999357
 
 
-Total time with key (sort+max): 58.15
+Total time with key (sort+max): 58.15  
 Total time without key (sort+max): 65.06
 
-Total time with key (max): 0.010000000000019
+Total time with key (max): 0.010000000000019  
 Total time without key (max): 9.5199999999999
 
 
