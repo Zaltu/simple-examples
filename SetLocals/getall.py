@@ -29,13 +29,13 @@ class ViaDict():
     Define a holder class and create functions to append to it's namespace.
     Ultimately functions very similarly to inheretance.
     """
-    def joindict(self, toadd):
+    def joindict(self, mod):
         """
         Join a given dict with this class' dict, essentially extending the functionality of the class.
 
-        :param module toadd: module who's functionality to port
+        :param module mod: module who's functionality to port
         """
-        toadd = dict([(name, cls) for name, cls in setall.__dict__.items() if name in setall.__all__])
+        toadd = dict([(name, cls) for name, cls in mod.__dict__.items() if name in mod.__all__])
         self.__dict__.update(toadd)
 
     def showdict(self):
