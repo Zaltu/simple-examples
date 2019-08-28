@@ -1,8 +1,11 @@
 """
 Define some COOL stuff and assign it to a given namespace.
 """
+import pprint
 
-def acoolfunc(self, val):
+__all__ = ["acoolfunc", "ACoolClass", "pprint"]
+
+def acoolfunc(self, val):  # pylint: disable=unused-argument
     """
     Print val
 
