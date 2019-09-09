@@ -1,41 +1,78 @@
-from multiprocessing import Process, Queue
+"""
+Tests for sharing complex objects between python processes.
+
+Note that the mutliprocessing.managers create proxies, not really "endpoints",
+so variable changes will not propagate
+"""
+from multiprocessing import Process
 from multiprocessing.managers import BaseManager
+import subprocess
 
 from pprint import pprint as pp
 
+
 class MyClass():
+    """
+    Dummy class with a test function using an external import
+    """
+    value = "print"
     def niceprint(self):
-        pp({"pretty": "dict"})
+        """
+        Dummy function
+        """
+        pp({"pretty": self.value})
 
-a = MyClass()
-
-
-class QueueManager(BaseManager):
-    pass
+A = MyClass()
 
 
 def themanager():
-    QueueManager.register('get_queue', callable=lambda: a)
-    m = QueueManager(address=('', 50000), authkey=b'abracadabra')
-    s = m.get_server()
-    s.serve_forever()
+    """
+    Manager container. Pops open the inter-process server and serves it until killed.
+    """
+    BaseManager.register('get_my_class', callable=lambda: A)
+    mana = BaseManager(address=('', 50000), authkey=b'abracadabra')
+    server = mana.get_server()
+    server.serve_forever()
+
 
 def multicalled():
-    QueueManager.register('get_queue')
-    rpm = QueueManager(address=('', 50000), authkey=b'abracadabra')
+    """
+    Meant to be called in a multiprocessing.Process for testing purposes.
+    Connects to the managed queue from the original process and calls the stored value.
+    """
+    BaseManager.register('get_my_class')
+    rpm = BaseManager(address=('', 50000), authkey=b'abracadabra')
     rpm.connect()
-    rpqueue = rpm.get_queue()
-    rpqueue.niceprint()
+    rpclass = rpm.get_my_class()
+    rpclass.niceprint()
 
-print("Launching Server process")
 
-sp = Process(target=themanager)
-sp.start()
+def test_multiprocess():
+    """
+    Simplification of the steps to test mutliprocessing module connectivity
+    """
+    rp = Process(target=multicalled)
+    rp.start()
+    rp.join()
 
-print("Launching read process")
 
-rp = Process(target=multicalled)
-rp.start()
+def test_subprocess():
+    """
+    Simplification of the steps to test subprocessing module connectivity
+    """
+    p = subprocess.Popen(["python3.7", "multi2test.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p.wait()
 
-rp.join()
-sp.join()
+
+if __name__ == "__main__":
+    print("Launching Server process")
+    SP = Process(target=themanager)
+    SP.start()
+
+    print("Testing multiprocess connect")
+    test_multiprocess()
+
+    print("Testing subprocess connect")
+    test_subprocess()
+
+    SP.join()  # Hangs forever

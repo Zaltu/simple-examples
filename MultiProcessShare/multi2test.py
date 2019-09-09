@@ -1,8 +1,14 @@
+"""
+Connect to a remote process and fetch a shared complex object.
+"""
 from multiprocessing.managers import BaseManager
-class QueueManager(BaseManager):
-    pass
-QueueManager.register('get_queue')
-m = QueueManager(address=('', 50000), authkey=b'abracadabra')
-m.connect()
-queue = m.get_queue()
-queue.get()({"a nice": "dict"})
+
+def test_connect_remote():
+    BaseManager.register('get_my_class')
+    rpm = BaseManager(address=('', 50000), authkey=b'abracadabra')
+    rpm.connect()
+    rpclass = rpm.get_my_class()
+    rpclass.niceprint()
+
+if __name__ == "__main__":
+    test_connect_remote()
