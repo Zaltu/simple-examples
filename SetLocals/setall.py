@@ -3,7 +3,7 @@ Define some COOL stuff and assign it to a given namespace.
 """
 import pprint
 
-__all__ = ["acoolfunc", "ACoolClass", "pprint"]
+ALL = ["acoolfunc", "ACoolClass", "pprint", "a.betterprint"]
 
 def acoolfunc(self, val):  # pylint: disable=unused-argument
     """
@@ -18,8 +18,12 @@ class ACoolClass():
     """
     Class test, prints a thing
     """
+    coolvalue = "bound function pepepog"
     def __init__(self):
         print("initializing class pepepog")
+
+    def betterprint(self):
+        print(self.coolvalue)
 
 
 def assign(externals):
@@ -32,3 +36,5 @@ def assign(externals):
     """
     externals["acoolfunc"] = acoolfunc
     externals["ACoolClass"] = ACoolClass
+
+a = ACoolClass()
