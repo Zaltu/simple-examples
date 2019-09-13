@@ -56,9 +56,7 @@ class ViaDict():
         for name in mod.ALL:
             pseq = name.split(".")
             leafdict = self._recurdict(mod, pseq, 0)
-            self.__dict__.update({
-                pseq[0]: leafdict
-            })
+            setattr(self, pseq[0], leafdict)
 
     def _recurdict(self, mod, pseq, i):
         if i == len(pseq):
