@@ -5,7 +5,16 @@ import setall
 
 # Second test
 class Namespace():
+    """
+    Namespace proxy container
+    """
     def __repr__(self):
+        """
+        Provides visual representation of the namespace
+
+        :returns: visual representation of the namespace
+        :rtype: str
+        """
         keys = sorted(self.__dict__)
         items = ("{}={!r}".format(k, self.__dict__[k]) for k in keys)
         return "{}({})".format(type(self).__name__, ", ".join(items))
@@ -24,15 +33,7 @@ class ViaDict():
         for name in mod.ALL:
             pseq = name.split(".")
             print("\nRunning for %s" % name)
-            if hasattr(self, pseq[0]):
-                print("Reusing namespace %s\n%s" % (pseq[0], getattr(self, pseq[0])))
-                leafdict = self._recurdict(getattr(mod, pseq[0]), pseq, 1, ns=getattr(self, pseq[0]))
-            elif len(pseq) > 1:
-                leafdict = Namespace()
-                self._recurdict(getattr(mod, pseq[0]), pseq, 1, leafdict)
-            else:
-                leafdict = getattr(mod, name)
-            setattr(self, pseq[0], leafdict)
+            self._recurdict(mod, pseq, 0, self)
 
     def _recurdict(self, mod, pseq, i, ns):
         if i+1 == len(pseq):
@@ -49,7 +50,7 @@ class ViaDict():
                 setattr(ns, pseq[i], Namespace())
                 self._recurdict(getattr(mod, pseq[i]), pseq, i+1, getattr(ns, pseq[i]))
             print("Returning ns %s" % ns)
-            return ns
+            return
         raise Exception("Cannot find %s in %s" % (pseq[i], dir(mod)))
 
     def showdict(self):
@@ -79,5 +80,3 @@ V.a.ruhoh.pprint("big brain")
 V.acoolfunc(None, "hewwo? - class")
 V.ACoolClass()
 V.pprint.pprint("layered pprint")
-
-
