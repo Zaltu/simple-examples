@@ -5,6 +5,7 @@ Note that the mutliprocessing.managers create proxies, not really "endpoints",
 so variable changes will not propagate
 """
 from multiprocessing import Process
+from multiprocessing import Manager
 from multiprocessing.managers import BaseManager
 import subprocess
 
@@ -28,30 +29,39 @@ A = MyClass()
 def themanager():
     """
     Manager container. Pops open the inter-process server and serves it until killed.
+
+    :returns: manager with registered class
+    :rtype: BaseManager
     """
     BaseManager.register('get_my_class', callable=lambda: A)
     mana = BaseManager(address=('', 50000), authkey=b'abracadabra')
-    server = mana.get_server()
-    server.serve_forever()
+    return mana
 
 
-def multicalled():
+def multicalled(ns):
     """
     Meant to be called in a multiprocessing.Process for testing purposes.
     Connects to the managed queue from the original process and calls the stored value.
+
+    :param SyncManager.Namespace ns: shared namespace
     """
     BaseManager.register('get_my_class')
     rpm = BaseManager(address=('', 50000), authkey=b'abracadabra')
     rpm.connect()
     rpclass = rpm.get_my_class()
     rpclass.niceprint()
+    if ns:
+        print("NS is set to %s" % ns.A.value)
+        ns.A.niceprint()
 
 
-def test_multiprocess():
+def test_multiprocess(ns=None):
     """
     Simplification of the steps to test mutliprocessing module connectivity
+
+    :param SyncManager.Namespace ns: shared namespace
     """
-    rp = Process(target=multicalled)
+    rp = Process(target=multicalled, args=(ns,))
     rp.start()
     rp.join()
 
@@ -66,13 +76,26 @@ def test_subprocess():
 
 if __name__ == "__main__":
     print("Launching Server process")
-    SP = Process(target=themanager)
+    mgr = themanager()
+    SP = Process(target=mgr.get_server().serve_forever)
     SP.start()
 
-    print("Testing multiprocess connect")
+    print("\nTesting multiprocess connect")
     test_multiprocess()
 
-    print("Testing subprocess connect")
+    print("\nTesting subprocess connect")
     test_subprocess()
+
+    # Testing with a SyncManager object instead
+    # Nonsensical with subprocesses
+    print("\nTesting with a syncmanager namespace")
+    NS = Manager().Namespace()
+    NS.A = A
+    test_multiprocess(NS)
+    print("Setting a new value")
+    A.value = "a brand new value"
+    NS.A = A
+    test_multiprocess(NS)
+
 
     SP.join()  # Hangs forever
