@@ -8,15 +8,16 @@ from multiprocessing import Process
 from multiprocessing import Manager
 from multiprocessing.managers import BaseManager
 import subprocess
+import os
 
 from pprint import pprint as pp
-
+from requests.exceptions import HTTPError
 
 class MyClass():
     """
     Dummy class with a test function using an external import
     """
-    value = "print"
+    value = HTTPError
     def niceprint(self):
         """
         Dummy function
@@ -24,6 +25,29 @@ class MyClass():
         pp({"pretty": self.value})
 
 A = MyClass()
+
+
+def dreamsF(*args, **kwargs):
+    print(os.getpid())
+    return "they say dreamers never die"
+
+def clanF(*args, **kwargs):
+    return "inb4 Sept finds out"
+
+class Namespace():
+    pass
+
+memes = Namespace()
+memes.nd = Namespace()
+memes.nd.dreams = dreamsF
+
+the = Namespace()
+the.oc = Namespace()
+the.oc.clan = clanF
+
+mainc = Namespace()
+mainc.memes = memes
+mainc.the = the
 
 
 def themanager():
@@ -51,8 +75,9 @@ def multicalled(ns):
     rpclass = rpm.get_my_class()
     rpclass.niceprint()
     if ns:
-        print("NS is set to %s" % ns.A.value)
-        ns.A.niceprint()
+        print("NS is set to %s" % ns)
+        print(os.getpid())
+        print(ns.memes.nd.dreams())
 
 
 def test_multiprocess(ns=None):
@@ -89,13 +114,17 @@ if __name__ == "__main__":
     # Testing with a SyncManager object instead
     # Nonsensical with subprocesses
     print("\nTesting with a syncmanager namespace")
+    test_multiprocess(mainc)
+    """
+    print("\nTesting with a syncmanager namespace")
     NS = Manager().Namespace()
     NS.A = A
     test_multiprocess(NS)
     print("Setting a new value")
-    A.value = "a brand new value"
-    NS.A = A
+    B = NS.A
+    B.value = "a brand new value"
+    NS.A = B
     test_multiprocess(NS)
-
+    """
 
     SP.join()  # Hangs forever
