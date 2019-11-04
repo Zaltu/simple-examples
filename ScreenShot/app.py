@@ -3,6 +3,7 @@ Very simple window to act as stand-in app
 """
 #pylint: disable=invalid-name
 import sys
+import pyscreenshot as ImageGrab
 from PySide2 import QtWidgets, QtCore
 from pynput import mouse
 
@@ -16,6 +17,7 @@ class SnapShot(mouse.Listener, QtWidgets.QRubberBand):
     def __init__(self, parent):
         self.parent = parent
         self.origin = QtCore.QPoint()
+        self.bbox = None
         mouse.Listener.__init__(self,
                                 on_move=self.on_mouse_move,
                                 on_click=self.on_mouse_click,
@@ -39,10 +41,15 @@ class SnapShot(mouse.Listener, QtWidgets.QRubberBand):
             self.setGeometry(QtCore.QRect(self.origin, QtCore.QSize()))
             self.show()
         else:
-            print("Position Width: %s" % self.geometry().x())
-            print("Position Height: %s" % self.geometry().y())
-            print("Size Width: %s" % self.geometry().width())
-            print("Size Height: %s" % self.geometry().height())
+            geo = self.geometry()
+            self.bbox = (geo.x(), geo.y(), geo.x()+geo.width(), geo.y()+geo.height())
+            print("Position Width: %s" % geo.x())
+            print("Position Height: %s" % geo.y())
+            print("Size Width: %s" % geo.width())
+            print("Size Height: %s" % geo.height())
+            self.hide()
+            im = ImageGrab.grab(bbox=S.bbox, backend='gnome-screenshot')
+            im.save('here.png')
             self.fexit()
 
     def on_mouse_move(self, x, y):
@@ -61,11 +68,10 @@ class SnapShot(mouse.Listener, QtWidgets.QRubberBand):
          - Stop the mouse listener
          - Exit the parent QApplication
         """
-        self.hide()
         self.stop()
         self.parent.exit()
 
 
 APP = QtWidgets.QApplication(sys.argv)
 S = SnapShot(APP)
-sys.exit(APP.exec_())
+APP.exec_()
