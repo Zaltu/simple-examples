@@ -1,32 +1,44 @@
 """
+Multiprocessing context share, but with dill instead of pickle/cPickle
 _processor represents the abstract, serverside code that holds the actual code to run in practice.
 """
-#pylint: disable=invalid-name,attribute-defined-outside-init,unused-argument
-from multiprocessing.managers import SyncManager
+#pylint: disable=invalid-name,attribute-defined-outside-init
+from multiprocess.managers import SyncManager
 
-def dreamsF(*args, **kwargs):
+class MuhContainer():
     """
-    Sample function 1. Returns simple data.
+    Sample complex object to return via RPC/Serialization
+    """
+    def __init__(self):
+        self.text = "Hit or miss, I guess they never miss, huh?"
+    def prove(self):
+        """
+        Sample complex operation to be callable from RPC
+        """
+        print(self.text)
 
-    :param args: args received
-    :param kwargs: kwargs received
+# Create a local sample object for testing
+M = MuhContainer()
+
+def dreamsF():
+    """
+    Sample function to update a value locally and also return something simple.
 
     :returns: sample text
     :rtype: str
     """
-    return "they say dreamers never die"
+    M.text = "You got a boyfriend I bet he doesn't kiss ya!"
+    return "Change confirmed"
 
-def clanF(*args, **kwargs):
+def clanF():
     """
-    Sample function 2. Returns simple data.
+    Sample function to return a complex object that should be maintained between processes via serialization
+    and that can be updated in the parent process's runtime.
 
-    :param args: args received
-    :param kwargs: kwargs received
-
-    :returns: sample text
-    :rtype: dict
+    :returns: a complex object, mutable in the parent process
+    :rtype: MuhContainer
     """
-    return {"noice":"inb4 Sept finds out"}
+    return M
 
 
 class Namespace():
@@ -94,7 +106,7 @@ class WrapManager(SyncManager):
 # Register our pseq parsing wrapper class
 WrapManager.register("process", callable=parse_pseq)
 
-# Serve the manager.
+# Serve the manager
 if __name__ == "__main__":
     wm = WrapManager(address=("0.0.0.0", 50000), authkey=b"aigis")
     print("Serving server\n")

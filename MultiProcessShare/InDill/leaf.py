@@ -4,9 +4,13 @@ Leaf is our executable running in another process, potentially on another host.
 #pylint: disable=invalid-name
 import processor
 
-result = processor.memes.nd.dreams({"1":"AKA"}, aka="MAD")
+result = processor.the.oc.clan()
+print("Result is %s" % result)
+result.prove()
+
+result = processor.memes.nd.dreams()
 print("Result is %s" % result)
 
-
-result = processor.the.oc.clan({"2":"luigi"}, smug=2)
+result = processor.the.oc.clan()
 print("Result is %s" % result)
+result.prove()
