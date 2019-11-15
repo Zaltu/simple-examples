@@ -28,6 +28,7 @@ def dreamsF():
     :rtype: str
     """
     M.text = "You got a boyfriend I bet he doesn't kiss ya!"
+    mainc.other = "He gon find another girl and he won't miss ya!"
     return "Change confirmed"
 
 def clanF():

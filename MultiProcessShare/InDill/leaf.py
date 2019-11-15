@@ -14,3 +14,6 @@ print("Result is %s" % result)
 result = processor.the.oc.clan()
 print("Result is %s" % result)
 result.prove()
+
+result = processor.other()
+print("Result is %s" % result)
