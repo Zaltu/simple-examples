@@ -13,6 +13,7 @@ class _WrapManager(SyncManager):
 _WrapManager.register("process")
 _WMGR = _WrapManager(address=("0.0.0.0", 50000), authkey=b"aigis")
 _WMGR.connect()
+TCLASS = _WMGR.process()
 
 def _inject(pseq, *args, **kwargs):
     """
@@ -29,8 +30,7 @@ def _inject(pseq, *args, **kwargs):
     """
     print("Calling the hidden meme function %s with \n%s\n%s" %
           (pseq, args, kwargs))
-    tclass = _WMGR.process()
-    return tclass.get_the_stuff(pseq, *args, **kwargs)
+    return TCLASS.get_the_stuff(pseq, *args, **kwargs)
 
 class CopyCat():
     """
