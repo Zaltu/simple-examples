@@ -17,3 +17,6 @@ result.prove()
 
 result = processor.other()
 print("Result is %s" % result)
+
+result = processor.memes.nd.NAME()
+print("Result is %s" % result)

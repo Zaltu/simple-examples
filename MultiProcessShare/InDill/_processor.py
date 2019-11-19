@@ -49,6 +49,7 @@ class Namespace():
 memes = Namespace()
 memes.nd = Namespace()
 memes.nd.dreams = dreamsF
+memes.nd.NAME = "MAD"
 
 the = Namespace()
 the.oc = Namespace()
