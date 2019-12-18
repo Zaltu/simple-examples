@@ -5,6 +5,8 @@ _processor represents the abstract, serverside code that holds the actual code t
 #pylint: disable=invalid-name,attribute-defined-outside-init
 from multiprocess.managers import SyncManager
 
+OUTOFSCOPE = "unlucky dude"
+
 class MuhContainer():
     """
     Sample complex object to return via RPC/Serialization
@@ -16,6 +18,8 @@ class MuhContainer():
         Sample complex operation to be callable from RPC
         """
         print(self.text)
+    def move(self):
+        print(OUTOFSCOPE)
 
 # Create a local sample object for testing
 M = MuhContainer()
