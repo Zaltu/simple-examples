@@ -38,6 +38,15 @@ def _model(input_ids, model, past, p=0.7):  #pylint: disable=invalid-name
 
 
 def xspeak(starting_text, iterations=20):
+    """
+    Return a generator for a certain number of text components following the starting text.
+
+    :param str starting_text: input text to complete
+    :param int iterations: number of text components to generate, default 20
+
+    :returns: all text componants (including starting text) in order of generation
+    :rtype: str
+    """
     word = torch.tensor(TOKENIZER.encode(starting_text))
     past_cache = None
     yield starting_text
@@ -47,6 +56,15 @@ def xspeak(starting_text, iterations=20):
 
 
 def speak(starting_text, iterations=20):
+    """
+    Return an expanded version of a given starting text with additional text components.
+
+    :param str starting_text: input text to complete
+    :param int iterations: number of text components to generate, default 20
+
+    :returns: expanded text
+    :rtype: str
+    """
     word = torch.tensor(TOKENIZER.encode(starting_text))
     past_cache = None
     generated = TOKENIZER.encode(starting_text)
@@ -55,10 +73,11 @@ def speak(starting_text, iterations=20):
         generated += [word]
     return TOKENIZER.decode(generated)
 
+
 print("Iterator=True")
 for chunk in xspeak("Though I walk in the valley of the shadow of death, I shall fear no"):
     print(chunk, end="", flush=True)
-
+print()
 print()
 print("Iterator=False")
 print(speak("Though I walk in the valley of the shadow of death, I shall fear no"))
