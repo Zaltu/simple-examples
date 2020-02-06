@@ -58,7 +58,6 @@ def groupF(string):
     :returns: a complex object, mutable in the parent process
     :rtype: MuhContainer
     """
-    JPStr.__module__ = "__main__"
     j = JPStr(string)
     return j
 
@@ -106,6 +105,9 @@ class parse_pseq():
             toret = toret(*args, **kwargs)
         elif args or kwargs:
             raise Exception("Too many arguments:\n%s\n%s" % (args, kwargs))
+
+        if type(toret).__module__ != "builtins":
+            type(toret).__module__ = "__main__"
         return toret
 
 
