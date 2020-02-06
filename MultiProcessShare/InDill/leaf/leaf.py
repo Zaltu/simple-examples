@@ -6,6 +6,12 @@ import processor
 
 OUTOFSCOPE = "another value"
 
+result = processor.the.oc.group("こんにちわ")
+print("Result is %s" % result)
+print(repr(result))
+print(result.__class__)
+
+
 result = processor.the.oc.clan()
 print("Result is %s" % result)
 result.prove()

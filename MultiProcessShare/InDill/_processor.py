@@ -4,6 +4,7 @@ _processor represents the abstract, serverside code that holds the actual code t
 """
 #pylint: disable=invalid-name,attribute-defined-outside-init
 from multiprocess.managers import SyncManager
+from layered import JPStr
 
 OUTOFSCOPE = "unlucky dude"
 
@@ -45,6 +46,22 @@ def clanF():
     """
     return M
 
+def groupF(string):
+    """
+    Sample function to return a complex object that should be maintained between processes via serialization
+    and that can be updated in the parent process's runtime.
+    Additionally, the object that is returned's type is defined in a different module.
+    This requires an edit to _dill.py to work properly.
+
+    :param str string: any string, this is just a test after all
+
+    :returns: a complex object, mutable in the parent process
+    :rtype: MuhContainer
+    """
+    JPStr.__module__ = "__main__"
+    j = JPStr(string)
+    return j
+
 
 class Namespace():
     """Empty placeholder class"""
@@ -58,6 +75,7 @@ memes.nd.NAME = "MAD"
 the = Namespace()
 the.oc = Namespace()
 the.oc.clan = clanF
+the.oc.group = groupF
 
 mainc = Namespace()
 mainc.memes = memes
