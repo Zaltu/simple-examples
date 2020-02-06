@@ -19,7 +19,7 @@ def genField(x, y):
     field = []
     for i in range(0, x):
         field.append([])
-        for j in range(0, y):
+        for _ in range(0, y):
             field[i].append(0)
     return field
 
